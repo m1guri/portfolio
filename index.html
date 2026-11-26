@@ -41,6 +41,9 @@ h2{font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute
 .card h3{margin:12px 0 2px;font-size:16px;font-weight:500}
 .card small{color:var(--muted)}
 .card.hide{display:none}
+.more-wrap{text-align:center;margin-top:32px}
+.more{background:none;font:inherit;font-size:14px;cursor:pointer}
+.more[hidden]{display:none}
 .about{display:grid;grid-template-columns:1fr 1fr;gap:40px}
 .about p{margin:0 0 14px;color:var(--muted)}
 .about ul{list-style:none;padding:0;margin:0;color:var(--muted)}
@@ -139,7 +142,7 @@ footer{padding:32px 0 40px;color:var(--muted);font-size:13px;border-top:1px soli
 <section id="work">
 <h2>Selected work</h2>
 <div class="filters">
-<button class="on" data-f="all">All</button><button data-f="video">Video</button><button data-f="design">Design</button>
+<button class="on" data-f="all">All</button><button data-f="video">Video</button><button data-f="design">Design</button><button data-f="website">Website</button>
 </div>
 <div class="grid">
 <a class="card" data-t="video"><div class="ph v"><span>Video thumbnail</span></div><h3>Project title</h3><small>Video · 2026</small></a>
@@ -148,7 +151,11 @@ footer{padding:32px 0 40px;color:var(--muted);font-size:13px;border-top:1px soli
 <a class="card" data-t="design"><div class="ph"><span>Design image</span></div><h3>Project title</h3><small>Design · 2025</small></a>
 <a class="card" data-t="video"><div class="ph v"><span>Video thumbnail</span></div><h3>Project title</h3><small>Video · 2025</small></a>
 <a class="card" data-t="design"><div class="ph"><span>Design image</span></div><h3>Project title</h3><small>Design · 2024</small></a>
+<a class="card" data-t="website"><div class="ph"><span>Website preview</span></div><h3>Project title</h3><small>Website · 2026</small></a>
+<a class="card" data-t="website"><div class="ph"><span>Website preview</span></div><h3>Project title</h3><small>Website · 2025</small></a>
+<a class="card" data-t="website"><div class="ph"><span>Website preview</span></div><h3>Project title</h3><small>Website · 2024</small></a>
 </div>
+<div class="more-wrap"><button id="more" class="btn more" type="button" aria-expanded="false">Show more</button></div>
 </section>
 
 <section id="clients">
@@ -207,16 +214,29 @@ footer{padding:32px 0 40px;color:var(--muted);font-size:13px;border-top:1px soli
   });
   label();
 })();
+var LIMIT=3,cur='all',expanded=false,moreBtn=document.getElementById('more');
+function applyWork(){
+  var n=0,total=0;
+  document.querySelectorAll('.card').forEach(function(c){
+    var match=cur==='all'||c.dataset.t===cur;
+    if(match){total++;}
+    var show=match&&(expanded||n<LIMIT);
+    if(match&&show){n++;}
+    c.classList.toggle('hide',!show);
+  });
+  moreBtn.hidden=total<=LIMIT;
+  moreBtn.textContent=expanded?'Show less':'Show more';
+  moreBtn.setAttribute('aria-expanded',String(expanded));
+}
 document.querySelectorAll('.filters button').forEach(function(b){
   b.addEventListener('click',function(){
     document.querySelectorAll('.filters button').forEach(function(x){x.classList.remove('on')});
     b.classList.add('on');
-    var f=b.dataset.f;
-    document.querySelectorAll('.card').forEach(function(c){
-      c.classList.toggle('hide',f!=='all'&&c.dataset.t!==f);
-    });
+    cur=b.dataset.f;expanded=false;applyWork();
   });
 });
+moreBtn.addEventListener('click',function(){expanded=!expanded;applyWork();});
+applyWork();
 var rv=document.getElementById('rv'),sb=document.getElementById('snd'),muted=true;
 function vm(m,v){try{var o={method:m};if(v!==undefined){o.value=v;}rv.contentWindow.postMessage(JSON.stringify(o),'*');}catch(e){}}
 var vol=document.getElementById('vol');
