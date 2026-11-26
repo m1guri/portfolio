@@ -63,19 +63,6 @@ footer{padding:32px 0 40px;color:var(--muted);font-size:13px;border-top:1px soli
 .reel{position:relative;aspect-ratio:16/9;background:var(--tile);border-radius:6px;overflow:hidden}
 .reel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1}
 .rph a{pointer-events:auto;color:var(--muted)}
-.snd{display:inline-flex;align-items:center;gap:8px;background:none;color:#fff;border:0;padding:6px 8px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
-.snd .i-on{display:none}
-.snd.on .i-on{display:block}
-.snd.on .i-off{display:none}
-.tap{position:absolute;inset:0;z-index:2;background:none;border:0;cursor:pointer}
-.bar{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:28px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;z-index:4;font-size:13px}
-.cb{background:none;border:0;color:#fff;cursor:pointer;padding:6px;display:inline-flex}
-.cb.paused .ic-pause{display:none}
-.cb:not(.paused) .ic-play{display:none}
-#pg{flex:1;min-width:0;accent-color:#fff;height:4px;cursor:pointer}
-.tm{font-variant-numeric:tabular-nums;min-width:82px;text-align:right}
-#vol{flex:none;width:80px;height:4px;accent-color:#fff;cursor:pointer}
-@media(max-width:560px){.snd .lbl,.tm{display:none}#vol{width:56px}}
 .rph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;pointer-events:none}
 .marq{overflow:hidden;padding:10px 0;-webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent)}
 .track{display:flex;align-items:center;width:max-content;animation:slide 45s linear infinite}
@@ -131,21 +118,8 @@ footer{padding:32px 0 40px;color:var(--muted);font-size:13px;border-top:1px soli
 <section id="reel">
 <h2>Demo reel</h2>
 <div class="reel">
-<iframe id="rv" src="https://player.vimeo.com/video/1250206948?autoplay=1&amp;muted=1&amp;loop=1&amp;controls=0&amp;title=0&amp;byline=0&amp;portrait=0&amp;playsinline=1&amp;dnt=1" title="Demo reel" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe id="rv" src="https://player.vimeo.com/video/1250206948?autoplay=1&amp;muted=1&amp;loop=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;playsinline=1&amp;dnt=1" title="Demo reel" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <div class="rph"><a href="https://vimeo.com/1250206948" target="_blank" rel="noopener">Watch the reel on Vimeo</a></div>
-<button class="tap" id="tap" type="button" aria-label="Play or pause"></button>
-<div class="bar">
-<button class="cb" id="pp" type="button" aria-label="Play or pause"><svg class="ic-pause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button>
-<input id="pg" type="range" min="0" max="1000" value="0" aria-label="Seek">
-<span class="tm" id="tm">0:00 / 0:00</span>
-<button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Toggle sound">
-<svg class="i-off" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
-<svg class="i-on" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
-<span class="lbl">Sound off</span>
-</button>
-<input id="vol" type="range" min="0" max="100" value="100" aria-label="Volume">
-<button class="cb" id="fs" type="button" aria-label="Fullscreen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
-</div>
 </div>
 </section>
 
@@ -246,63 +220,6 @@ document.querySelectorAll('.filters button').forEach(function(b){
 });
 moreBtn.addEventListener('click',function(){expanded=!expanded;applyWork();});
 applyWork();
-var rv=document.getElementById('rv'),sb=document.getElementById('snd'),muted=true;
-function vm(m,v){try{var o={method:m};if(v!==undefined){o.value=v;}rv.contentWindow.postMessage(JSON.stringify(o),'*');}catch(e){}}
-var vol=document.getElementById('vol');
-function snd(){
-  sb.classList.toggle('on',!muted);
-  sb.setAttribute('aria-pressed',String(!muted));
-  sb.querySelector('.lbl').textContent=muted?'Sound off':'Sound on';
-}
-sb.addEventListener('click',function(){
-  muted=!muted;
-  if(muted){vm('setMuted',true);}
-  else{if(+vol.value===0){vol.value=100;}vm('setMuted',false);vm('setVolume',vol.value/100);vm('play');}
-  snd();
-});
-vol.addEventListener('input',function(){
-  var v=vol.value/100;
-  if(v===0){muted=true;vm('setMuted',true);}
-  else{if(muted){muted=false;vm('setMuted',false);vm('play');}vm('setVolume',v);}
-  snd();
-});
-var pp=document.getElementById('pp'),pg=document.getElementById('pg'),tm=document.getElementById('tm'),fs=document.getElementById('fs'),tap=document.getElementById('tap'),box=document.querySelector('.reel');
-var playing=true,dur=0,cur=0,seeking=false,base=0,t0=0,gotEv=false;
-function fmt(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
-function draw(){tm.textContent=fmt(cur)+' / '+fmt(dur);if(!seeking&&dur)pg.value=Math.round(cur/dur*1000);pp.classList.toggle('paused',!playing);}
-function toggle(){playing=!playing;base=cur;t0=performance.now();vm(playing?'play':'pause');draw();}
-pp.addEventListener('click',toggle);
-tap.addEventListener('click',toggle);
-pg.addEventListener('input',function(){seeking=true;cur=pg.value/1000*dur;draw();});
-pg.addEventListener('change',function(){vm('setCurrentTime',pg.value/1000*dur);cur=pg.value/1000*dur;base=cur;t0=performance.now();seeking=false;});
-fs.addEventListener('click',function(){
-  if(document.fullscreenElement){document.exitFullscreen();}
-  else if(box.requestFullscreen){box.requestFullscreen();}
-  else if(box.webkitRequestFullscreen){box.webkitRequestFullscreen();}
-});
-function sub(){['timeupdate','play','pause','seeked'].forEach(function(n){vm('addEventListener',n);});vm('getDuration');vm('getCurrentTime');}
-window.addEventListener('message',function(e){
-  if(e.source!==rv.contentWindow)return;
-  var d;try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(x){return;}
-  if(!d)return;
-  if(d.event==='ready'){sub();return;}
-  if(d.event==='timeupdate'&&d.data){gotEv=true;cur=d.data.seconds||0;if(d.data.duration){dur=d.data.duration;}base=cur;t0=performance.now();}
-  else if(d.event==='seeked'&&d.data){cur=d.data.seconds||0;base=cur;t0=performance.now();}
-  else if(d.event==='play'){playing=true;base=cur;t0=performance.now();}
-  else if(d.event==='pause'){playing=false;}
-  else if(d.method==='getDuration'&&d.value){dur=d.value;}
-  else if(d.method==='getCurrentTime'&&typeof d.value==='number'){cur=d.value;base=cur;t0=performance.now();}
-  draw();
-});
-rv.addEventListener('load',function(){setTimeout(sub,300);setTimeout(sub,1500);});
-sub();
-var tries=0,iv=setInterval(function(){if(gotEv||++tries>40){clearInterval(iv);return;}sub();},500);
-function tick(){
-  if(playing&&!seeking&&dur&&gotEv){cur=Math.min(dur,base+(performance.now()-t0)/1000);draw();}
-  requestAnimationFrame(tick);
-}
-requestAnimationFrame(tick);
-draw();
 (function(){var t=document.querySelector('.track');if(!t)return;Array.prototype.slice.call(t.children).forEach(function(k){var c=k.cloneNode(true);c.setAttribute('aria-hidden','true');c.setAttribute('tabindex','-1');t.appendChild(c);});})();
 </script>
 </body>
